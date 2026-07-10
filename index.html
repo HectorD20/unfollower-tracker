@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unfollower Tracker — Instagram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="bg-gradient" aria-hidden="true"></div>
+
+  <div class="container">
+    <header>
+      <h1>Unfollower Tracker</h1>
+      <p>Detecta quién no te sigue de vuelta en Instagram</p>
+      <span class="badge-private">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        100% local — tus datos nunca salen del navegador
+      </span>
+    </header>
+
+    <details class="guide glass" open>
+      <summary>¿Cómo obtener tus archivos de Instagram?</summary>
+      <ol>
+        <li>Abre Instagram → <strong>Configuración y actividad</strong> → <strong>Centro de cuentas</strong> → <strong>Tu información y permisos</strong> → <strong>Descargar tu información</strong>.</li>
+        <li>Elige formato <strong>JSON</strong> y selecciona solo <strong>Seguidores y seguidos</strong>.</li>
+        <li>Solicita la descarga y espera el correo de Meta (puede tardar unos minutos u horas).</li>
+        <li>Descomprime el archivo ZIP y arrastra la <strong>carpeta completa</strong> aquí abajo, o carga los archivos <code>followers_*.json</code> y <code>following*.json</code> por separado.</li>
+      </ol>
+    </details>
+
+    <div class="drop-zone glass folder-zone" id="drop-folder">
+      <input type="file" id="folder-input" webkitdirectory multiple aria-label="Cargar carpeta de exportación">
+      <div class="drop-icon">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>Cargar carpeta de exportación</h3>
+      <p class="file-hint">Arrastra la carpeta descomprimida o haz clic para seleccionarla. Detectamos <strong>followers_*.json</strong> y <strong>following*.json</strong> automáticamente.</p>
+      <p class="file-name" id="folder-filename"></p>
+    </div>
+
+    <p class="upload-divider"><span>o carga archivos individualmente</span></p>
+
+    <section id="upload-section">
+      <div class="drop-zone glass" id="drop-followers" data-type="followers">
+        <input type="file" accept=".json,application/json" multiple aria-label="Cargar seguidores">
+        <div class="drop-icon">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Cargar seguidores</h3>
+        <p class="file-hint">Arrastra uno o varios <strong>followers_*.json</strong></p>
+        <p class="file-name" id="followers-filename"></p>
+      </div>
+
+      <div class="drop-zone glass" id="drop-following" data-type="following">
+        <input type="file" accept=".json,application/json" multiple aria-label="Cargar seguidos">
+        <div class="drop-icon">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Cargar seguidos</h3>
+        <p class="file-hint">Arrastra uno o varios <strong>following*.json</strong></p>
+        <p class="file-name" id="following-filename"></p>
+      </div>
+    </section>
+
+    <details class="paste-section glass">
+      <summary>Pegar JSON manualmente</summary>
+      <div class="paste-grid">
+        <div class="paste-field">
+          <label for="paste-followers">Seguidores (followers_1.json)</label>
+          <textarea id="paste-followers" rows="4" placeholder='[{"string_list_data":[{"value":"usuario"}]}]'></textarea>
+          <button type="button" class="paste-btn" data-type="followers">Usar este JSON</button>
+        </div>
+        <div class="paste-field">
+          <label for="paste-following">Seguidos (following.json)</label>
+          <textarea id="paste-following" rows="4" placeholder='{"relationships_following":[{"title":"usuario"}]}'></textarea>
+          <button type="button" class="paste-btn" data-type="following">Usar este JSON</button>
+        </div>
+      </div>
+    </details>
+
+    <button class="analyze-btn" id="analyze-btn" disabled>Analizar seguimiento</button>
+
+    <section id="results-section">
+      <div class="stats-row">
+        <div class="stat-card glass unfollowers">
+          <div class="number" id="stat-unfollowers">0</div>
+          <div class="label">No te siguen</div>
+        </div>
+        <div class="stat-card glass not-following">
+          <div class="number" id="stat-not-following">0</div>
+          <div class="label">No los sigues</div>
+        </div>
+        <div class="stat-card glass mutual">
+          <div class="number" id="stat-mutual">0</div>
+          <div class="label">Mutuo</div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="Buscar usuario…" autocomplete="off">
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="unfollowers" aria-selected="true">
+          No me siguen <span class="count" id="count-unfollowers">0</span>
+        </button>
+        <button class="tab-btn" role="tab" data-tab="not-following" aria-selected="false">
+          No los sigo <span class="count" id="count-not-following">0</span>
+        </button>
+        <button class="tab-btn" role="tab" data-tab="mutual" aria-selected="false">
+          Mutuo <span class="count" id="count-mutual">0</span>
+        </button>
+      </div>
+
+      <div class="glass results-list-container">
+        <div class="tab-panel active" id="panel-unfollowers" role="tabpanel">
+          <ul class="user-list" id="list-unfollowers"></ul>
+        </div>
+        <div class="tab-panel" id="panel-not-following" role="tabpanel">
+          <ul class="user-list" id="list-not-following"></ul>
+        </div>
+        <div class="tab-panel" id="panel-mutual" role="tabpanel">
+          <ul class="user-list" id="list-mutual"></ul>
+        </div>
+      </div>
+
+      <button class="reset-link" id="reset-btn">Cargar archivos diferentes</button>
+    </section>
+  </div>
+
+  <div class="error-toast" id="error-toast" role="alert"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

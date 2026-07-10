@@ -1,0 +1,9 @@
+# Datos personales de Instagram — nunca subir al repositorio
+*.json
+
+# Editor
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
