@@ -1,8 +1,11 @@
+const DISMISSED_KEY = 'unfollower-tracker-dismissed';
+
 const state = {
   followers: [],
   following: [],
   sources: { followers: [], following: [] },
-  results: { unfollowers: [], notFollowing: [], mutual: [] }
+  results: { unfollowers: [], notFollowing: [], mutual: [] },
+  dismissed: new Set(JSON.parse(localStorage.getItem(DISMISSED_KEY) || '[]'))
 };
 
 const dropFolder = document.getElementById('drop-folder');
@@ -277,19 +280,42 @@ function setupFolderZone() {
   });
 }
 
+function saveDismissed() {
+  localStorage.setItem(DISMISSED_KEY, JSON.stringify([...state.dismissed]));
+}
+
+function filterDismissed(users) {
+  return users.filter(u => !state.dismissed.has(u));
+}
+
 function analyze() {
   const followersSet = new Set(state.followers);
   const followingSet = new Set(state.following);
 
-  const unfollowers = [...followingSet].filter(u => !followersSet.has(u)).sort();
-  const notFollowing = [...followersSet].filter(u => !followingSet.has(u)).sort();
-  const mutual = [...followingSet].filter(u => followersSet.has(u)).sort();
+  const unfollowers = filterDismissed(
+    [...followingSet].filter(u => !followersSet.has(u)).sort()
+  );
+  const notFollowing = filterDismissed(
+    [...followersSet].filter(u => !followingSet.has(u)).sort()
+  );
+  const mutual = filterDismissed(
+    [...followingSet].filter(u => followersSet.has(u)).sort()
+  );
 
   state.results = { unfollowers, notFollowing, mutual };
   renderResults();
 }
 
-function createUserItem(username) {
+function dismissUser(username, category) {
+  state.dismissed.add(username);
+  saveDismissed();
+
+  const listKey = category === 'not-following' ? 'notFollowing' : category;
+  state.results[listKey] = state.results[listKey].filter(u => u !== username);
+  updateResultsUI();
+}
+
+function createUserItem(username, category) {
   const li = document.createElement('li');
   li.className = 'user-item';
   li.dataset.username = username;
@@ -298,6 +324,9 @@ function createUserItem(username) {
   name.className = 'username';
   name.textContent = `@${username}`;
 
+  const actions = document.createElement('div');
+  actions.className = 'user-actions';
+
   const link = document.createElement('a');
   link.className = 'profile-link';
   link.href = `https://instagram.com/${encodeURIComponent(username)}`;
@@ -305,22 +334,33 @@ function createUserItem(username) {
   link.rel = 'noopener noreferrer';
   link.innerHTML = `Ver perfil <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
 
-  li.append(name, link);
+  const dismissBtn = document.createElement('button');
+  dismissBtn.type = 'button';
+  dismissBtn.className = 'dismiss-btn';
+  dismissBtn.title = 'Quitar de la lista (ya lo eliminaste de Instagram)';
+  dismissBtn.innerHTML = `Ya eliminé <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+  dismissBtn.addEventListener('click', () => {
+    li.classList.add('removing');
+    setTimeout(() => dismissUser(username, category), 200);
+  });
+
+  actions.append(link, dismissBtn);
+  li.append(name, actions);
   return li;
 }
 
-function renderList(listEl, users) {
+function renderList(listEl, users, category) {
   listEl.innerHTML = '';
   if (users.length === 0) {
     listEl.innerHTML = '<li class="empty-state">No hay usuarios en esta categoría.</li>';
     return;
   }
   const fragment = document.createDocumentFragment();
-  users.forEach(u => fragment.appendChild(createUserItem(u)));
+  users.forEach(u => fragment.appendChild(createUserItem(u, category)));
   listEl.appendChild(fragment);
 }
 
-function renderResults() {
+function updateResultsUI() {
   const { unfollowers, notFollowing, mutual } = state.results;
 
   document.getElementById('stat-unfollowers').textContent = unfollowers.length;
@@ -331,9 +371,28 @@ function renderResults() {
   document.getElementById('count-not-following').textContent = notFollowing.length;
   document.getElementById('count-mutual').textContent = mutual.length;
 
-  renderList(document.getElementById('list-unfollowers'), unfollowers);
-  renderList(document.getElementById('list-not-following'), notFollowing);
-  renderList(document.getElementById('list-mutual'), mutual);
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'unfollowers';
+  const lists = {
+    unfollowers: document.getElementById('list-unfollowers'),
+    'not-following': document.getElementById('list-not-following'),
+    mutual: document.getElementById('list-mutual')
+  };
+
+  renderList(lists.unfollowers, unfollowers, 'unfollowers');
+  renderList(lists['not-following'], notFollowing, 'not-following');
+  renderList(lists.mutual, mutual, 'mutual');
+
+  searchInput.dispatchEvent(new Event('input'));
+
+  const activePanel = document.getElementById(`panel-${activeTab}`);
+  if (activePanel && !activePanel.classList.contains('active')) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    activePanel.classList.add('active');
+  }
+}
+
+function renderResults() {
+  updateResultsUI();
 
   uploadSection.classList.add('compact');
   dropFolder.classList.add('compact');
@@ -347,6 +406,8 @@ function resetAll() {
   state.following = [];
   state.sources = { followers: [], following: [] };
   state.results = { unfollowers: [], notFollowing: [], mutual: [] };
+  state.dismissed = new Set();
+  localStorage.removeItem(DISMISSED_KEY);
 
   [dropFollowers, dropFollowing].forEach(zone => {
     markZoneLoaded(zone, false);

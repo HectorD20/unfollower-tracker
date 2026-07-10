@@ -349,6 +349,11 @@ header p {
   display: block;
 }
 
+.analyze-section {
+  margin: 2rem 0 2.5rem;
+  padding: 0.5rem 0;
+}
+
 .analyze-btn {
   display: block;
   width: 100%;
@@ -387,6 +392,8 @@ header p {
 #results-section {
   display: none;
   animation: fadeUp 0.5s ease;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 #results-section.visible {
@@ -576,6 +583,13 @@ header p {
   word-break: break-all;
 }
 
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .profile-link {
   flex-shrink: 0;
   display: inline-flex;
@@ -601,6 +615,41 @@ header p {
 .profile-link svg {
   width: 14px;
   height: 14px;
+}
+
+.dismiss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.dismiss-btn:hover {
+  color: var(--danger);
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.dismiss-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.user-item.removing {
+  opacity: 0;
+  transform: translateX(12px);
+  transition: opacity 0.25s, transform 0.25s;
 }
 
 .empty-state {
@@ -722,7 +771,12 @@ header p {
   #upload-section {
     grid-template-columns: 1fr;
     gap: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .analyze-section {
+    margin: 1.75rem 0 2rem;
+    padding: 0.75rem 0;
   }
 
   .analyze-btn {
@@ -783,8 +837,13 @@ header p {
   .user-item {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.5rem;
+    gap: 0.65rem;
     padding: 0.85rem 1rem;
+  }
+
+  .user-actions {
+    flex-direction: column;
+    width: 100%;
   }
 
   .profile-link {
@@ -792,6 +851,12 @@ header p {
     justify-content: center;
     min-height: 44px;
     padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .dismiss-btn {
+    width: 100%;
+    min-height: 44px;
     font-size: 0.85rem;
   }
 
