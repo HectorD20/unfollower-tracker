@@ -514,6 +514,10 @@ header p {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.tab-label-short {
+  display: none;
+}
+
 .tab-panel {
   display: none;
 }
@@ -648,30 +652,193 @@ header p {
 }
 
 @media (max-width: 600px) {
-  #upload-section {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 1.25rem 1rem calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  header {
+    margin-bottom: 1.5rem;
+  }
+
+  header h1 {
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+  }
+
+  header p {
+    font-size: 0.85rem;
+  }
+
+  .badge-private {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+    max-width: 100%;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .guide summary,
+  .paste-section summary {
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .guide ol {
+    padding: 0 1rem 1rem 1.75rem;
+    font-size: 0.82rem;
   }
 
   .paste-grid {
     grid-template-columns: 1fr;
+    padding: 0 1rem 1rem;
+  }
+
+  .folder-zone,
+  .drop-zone {
+    padding: 1.25rem 1rem;
+  }
+
+  .drop-zone:hover,
+  .drop-zone.drag-over,
+  .folder-zone:hover,
+  .folder-zone.drag-over {
+    transform: none;
+  }
+
+  .drop-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .drop-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .upload-divider {
+    margin: 1rem 0;
+    font-size: 0.72rem;
+  }
+
+  #upload-section {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .analyze-btn {
+    max-width: none;
+    min-height: 48px;
+    font-size: 1rem;
   }
 
   .stats-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem 0.35rem;
+  }
+
+  .stat-card .number {
+    font-size: 1.35rem;
+  }
+
+  .stat-card .label {
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+  }
+
+  .search-bar input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .tabs {
+    gap: 0.35rem;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.25rem;
   }
 
   .tab-btn {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-height: 44px;
     font-size: 0.75rem;
-    padding: 0.55rem 0.7rem;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .tab-label-full {
+    display: none;
+  }
+
+  .tab-label-short {
+    display: inline;
+  }
+
+  .user-list {
+    max-height: min(55dvh, 480px);
   }
 
   .user-item {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
   }
 
   .profile-link {
     width: 100%;
     justify-content: center;
+    min-height: 44px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .paste-btn {
+    min-height: 44px;
+    width: 100%;
+    font-size: 0.85rem;
+  }
+
+  .error-toast {
+    left: 1rem;
+    right: 1rem;
+    transform: translateY(100px);
+    text-align: center;
+  }
+
+  .error-toast.show {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .stat-card .number {
+    font-size: 1.2rem;
+  }
+
+  .stat-card .label {
+    font-size: 0.58rem;
+  }
+
+  .tab-btn {
+    font-size: 0.7rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .drop-zone h3,
+  .folder-zone h3 {
+    font-size: 0.88rem;
+  }
+
+  .drop-zone .file-hint,
+  .folder-zone .file-hint {
+    font-size: 0.72rem;
   }
 }

@@ -369,6 +369,10 @@ function resetAll() {
 }
 
 function init() {
+  if (window.matchMedia('(min-width: 601px)').matches) {
+    document.querySelector('.guide')?.setAttribute('open', '');
+  }
+
   setupFolderZone();
   setupDropZone(dropFollowers);
   setupDropZone(dropFollowing);

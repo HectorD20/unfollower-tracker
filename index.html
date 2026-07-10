@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f0a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Unfollower Tracker — Instagram</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +24,7 @@
       </span>
     </header>
 
-    <details class="guide glass" open>
+    <details class="guide glass">
       <summary>¿Cómo obtener tus archivos de Instagram?</summary>
       <ol>
         <li>Abre Instagram → <strong>Configuración y actividad</strong> → <strong>Centro de cuentas</strong> → <strong>Tu información y permisos</strong> → <strong>Descargar tu información</strong>.</li>
@@ -124,13 +126,19 @@
 
       <div class="tabs" role="tablist">
         <button class="tab-btn active" role="tab" data-tab="unfollowers" aria-selected="true">
-          No me siguen <span class="count" id="count-unfollowers">0</span>
+          <span class="tab-label-full">No me siguen</span>
+          <span class="tab-label-short">No siguen</span>
+          <span class="count" id="count-unfollowers">0</span>
         </button>
         <button class="tab-btn" role="tab" data-tab="not-following" aria-selected="false">
-          No los sigo <span class="count" id="count-not-following">0</span>
+          <span class="tab-label-full">No los sigo</span>
+          <span class="tab-label-short">No sigo</span>
+          <span class="count" id="count-not-following">0</span>
         </button>
         <button class="tab-btn" role="tab" data-tab="mutual" aria-selected="false">
-          Mutuo <span class="count" id="count-mutual">0</span>
+          <span class="tab-label-full">Mutuo</span>
+          <span class="tab-label-short">Mutuo</span>
+          <span class="count" id="count-mutual">0</span>
         </button>
       </div>
 
